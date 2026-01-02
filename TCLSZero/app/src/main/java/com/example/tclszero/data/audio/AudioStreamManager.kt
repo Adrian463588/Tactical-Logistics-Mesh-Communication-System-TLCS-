@@ -19,6 +19,10 @@ class AudioStreamManager @Inject constructor() {
     private var recordingJob: Job? = null
     private var playbackJob: Job? = null
 
+    private var isRecording = false
+    private var isPlaying = false
+
+
     private val sampleRate = 16000
     private val channelConfig = AudioFormat.CHANNEL_IN_MONO
     private val audioFormat = AudioFormat.ENCODING_PCM_16BIT
@@ -28,6 +32,12 @@ class AudioStreamManager @Inject constructor() {
      * Start recording voice and return as InputStream for mesh transmission
      */
     fun startRecording(scope: CoroutineScope): PipedInputStream? {
+        if (isRecording) {
+            Timber.w("Recording already in progress")
+            return null
+        }
+
+        isRecording = true
         return try {
             val output = PipedOutputStream()
             val input = PipedInputStream(output)
@@ -40,7 +50,16 @@ class AudioStreamManager @Inject constructor() {
                 bufferSize * 2
             )
 
+// Check if AudioRecord was initialized successfully
+            if (audioRecord?.state != AudioRecord.STATE_INITIALIZED) {
+                Timber.e("AudioRecord failed to initialize")
+                audioRecord?.release()
+                audioRecord = null
+                return null
+            }
+
             audioRecord?.startRecording()
+
 
             recordingJob = scope.launch {
                 val buffer = ByteArray(bufferSize)
@@ -55,17 +74,34 @@ class AudioStreamManager @Inject constructor() {
 
             input
         } catch (e: Exception) {
+            isRecording = false
             Timber.e(e, "Failed to start recording")
             null
         }
     }
 
     fun stopRecording() {
-        recordingJob?.cancel()
-        audioRecord?.stop()
-        audioRecord?.release()
-        audioRecord = null
+        if (!isRecording) {
+            Timber.w("Recording is not active")
+            return
+        }
+
+        try {
+            recordingJob?.cancel()
+            if (audioRecord != null) {
+                audioRecord?.stop()
+                audioRecord?.release()
+            }
+            audioRecord = null
+        } catch (e: IllegalStateException) {
+            Timber.e(e, "Error stopping recording")
+            audioRecord = null
+        } finally {
+            isRecording = false
+        }
     }
+
+
 
     /**
      * Play incoming audio stream with low latency
@@ -102,9 +138,17 @@ class AudioStreamManager @Inject constructor() {
     }
 
     fun stopPlayback() {
-        playbackJob?.cancel()
-        audioTrack?.stop()
-        audioTrack?.release()
-        audioTrack = null
+        try {
+            playbackJob?.cancel()
+            if (audioTrack != null && audioTrack?.playState == AudioTrack.PLAYSTATE_PLAYING) {
+                audioTrack?.stop()
+            }
+            audioTrack?.release()
+            audioTrack = null
+        } catch (e: IllegalStateException) {
+            Timber.e(e, "Error stopping playback")
+            audioTrack = null
+        }
     }
+
 }

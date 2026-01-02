@@ -44,10 +44,16 @@ class PttViewModel @Inject constructor(
      * User releases PTT button
      */
     fun stopTransmit() {
-        audioStreamManager.stopRecording()
-        _pttState.value = PttState.IDLE
-        Timber.d("PTT: Transmission ended")
+        try {
+            audioStreamManager.stopRecording()
+            _pttState.value = PttState.IDLE
+            Timber.d("PTT: Transmission ended")
+        } catch (e: Exception) {
+            Timber.e(e, "Error stopping transmission")
+            _pttState.value = PttState.IDLE
+        }
     }
+
 
     /**
      * Receive audio from mesh peer

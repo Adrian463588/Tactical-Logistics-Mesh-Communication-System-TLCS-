@@ -1,5 +1,6 @@
 package com.example.tclszero.presentation
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +10,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Mic
+import android.Manifest
+
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,6 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 
 import com.example.tclszero.presentation.comms.PttViewModel
@@ -35,6 +40,19 @@ class MainActivity : ComponentActivity() {
             Timber.plant(Timber.DebugTree())
         }
 
+        // Request microphone permission
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.RECORD_AUDIO),
+                PERMISSION_REQUEST_CODE
+            )
+        }
+
         setContent {
             TlcsTheme {
                 // A surface container using the 'background' color from the theme
@@ -46,6 +64,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+    companion object {
+        private const val PERMISSION_REQUEST_CODE = 100
     }
 }
 
