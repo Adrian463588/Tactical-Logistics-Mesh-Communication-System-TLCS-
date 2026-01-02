@@ -10,8 +10,9 @@ import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.PipedInputStream
 import java.io.PipedOutputStream
+import javax.inject.Inject
 
-class AudioStreamManager {
+class AudioStreamManager @Inject constructor() {
 
     private var audioRecord: AudioRecord? = null
     private var audioTrack: AudioTrack? = null
