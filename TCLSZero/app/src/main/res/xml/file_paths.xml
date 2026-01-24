@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- App-internal files directory -->
+    <files-path name="tiles" path="offline_tiles/" />
+    <files-path name="osmdroid" path="osmdroid/" />
+    
+    <!-- Cache directory for temporary files -->
+    <cache-path name="cache" path="/" />
+</paths>

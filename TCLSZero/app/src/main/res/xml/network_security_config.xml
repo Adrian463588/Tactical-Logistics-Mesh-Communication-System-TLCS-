@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- 
+    TLCS Zero Network Security Configuration
+    
+    This app is designed for 100% offline operation.
+    Network access is disabled to ensure:
+    - No data leakage in tactical environments
+    - No dependency on internet connectivity
+    - Full offline capability
+    -->
+    
+    <!-- Disable cleartext traffic (no HTTP) -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+    
+    <!-- 
+    If you need to enable tile downloads from a specific server in the future,
+    add a domain-config like this:
+    
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">tile.openstreetmap.org</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+    -->
+</network-security-config>

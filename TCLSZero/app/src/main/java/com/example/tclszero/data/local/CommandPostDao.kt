@@ -20,4 +20,7 @@ interface CommandPostDao {
 
     @Query("UPDATE command_posts SET ammoCapacity = :ammo WHERE postId = :postId")
     suspend fun updateAmmo(postId: String, ammo: Int)
+
+    @Query("DELETE FROM command_posts WHERE postId = :postId")
+    suspend fun deleteById(postId: String)
 }

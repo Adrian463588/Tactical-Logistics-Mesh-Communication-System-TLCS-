@@ -23,6 +23,7 @@ wearable = "2.9.1" # REMOVED: Dangerous for Phone apps
 healthServices = "1.0.0-rc02"
 gson = "2.10.1"
 timber = "5.0.1"
+preference = "1.2.1"
 
 
 [libraries]
@@ -72,6 +73,7 @@ androidx-health-services = { group = "androidx.health", name = "health-services-
 # Tools
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+androidx-preference = { group = "androidx.preference", name = "preference-ktx", version.ref = "preference" }
 
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "composeMaterialIcons" }
 

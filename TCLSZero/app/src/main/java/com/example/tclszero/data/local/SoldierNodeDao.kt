@@ -28,4 +28,7 @@ interface SoldierNodeDao {
 
     @Query("UPDATE soldier_nodes SET status = :status WHERE nodeId = :nodeId")
     suspend fun updateStatus(nodeId: String, status: String)
+
+    @Query("DELETE FROM soldier_nodes WHERE nodeId = :nodeId")
+    suspend fun deleteById(nodeId: String)
 }
